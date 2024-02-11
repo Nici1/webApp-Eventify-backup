@@ -33,7 +33,6 @@ router
     const blobServiceClient = new BlobServiceClient(`https://lord.blob.core.windows.net/test?sp=racwdli&st=2024-02-08T22:31:23Z&se=2024-03-29T06:31:23Z&sv=2022-11-02&sr=c&sig=gn8efUSCxmUVAh7pjmCDexSV0YnpfMjfCFqelkZBGo8%3D`);
   
     const containerName =  req.user.id;
-    
     const containerClient = blobServiceClient.getContainerClient(containerName);
     
     const contentType = 'image/png';  // Adjust this based on your file type

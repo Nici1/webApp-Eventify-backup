@@ -36,6 +36,7 @@ app.use((req, res, next) => {
 
 
 
+
 //app.use(cors())
 app.use('/register', register);
 
@@ -44,12 +45,38 @@ app.use('/login', login);
 app.use('/venue', venue);
 
 
-app.get('/Events', async(req, res)=>{
-   
+app.get('/Events', async(req, res)=>{});
 
-});
+app.get("/", async (req, res) => {
+  try {
 
-app.get("/", (req, res) => {
+    const blobServiceClient = new BlobServiceClient(`https://lord.blob.core.windows.net/test?sp=r&st=2024-02-08T17:00:54Z&se=2024-03-13T01:00:54Z&sv=2022-11-02&sr=c&sig=I41swLoigVUKdUUMfAM%2Fml%2BFlqywDfM5%2FtNDIfE8Y0Q%3D`);
+
+    const containerClient = blobServiceClient.getContainerClient('');
+
+    const images = []
+    // Specify the blob name you want to download
+    for (let i=0; i < 3; i++){
+      const blobName = "b"+ `${i+1}`+ ".jpeg";
+      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+      // Download the blob content
+      const downloadBlobResponse = await blockBlobClient.downloadToBuffer();
+      images[i] = downloadBlobResponse.toString('base64');
+    
+      }
+      //console.log(images)
+
+    // Now, downloadBlobResponse contains the content of the blob
+    // You can use it as needed
+    res.send(images)
+
+  }
+    
+    catch(e){
+      console.log(e)
+    }
+ 
   
 })
 app.use(token_verification)
