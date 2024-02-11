@@ -13,25 +13,30 @@ import { BlobServiceClient, StorageSharedKeyCredential } from '@azure/storage-bl
 import multer from 'multer';
 import path from 'path'
 
-dotenv.config({path: 'api/.env'})
+dotenv.config()
 
 const app = express()
-app.use(cors( {origin: process.env.BASE_URL + `:` + process.env.FRONTEND_PORT,
+
+
+app.use(cors( {origin: 'http://localhost:5000',
   credentials: true,
   secure: true}));
 
-
+app.use(cookieParser());
 app.use(express.json())
 
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', process.env.BASE_URL + `:` + process.env.FRONTEND_PORT);
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5000');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
 
   next();
 });
 
+
+
+//app.use(cors())
 app.use('/register', register);
 
 app.use('/login', login);
@@ -116,7 +121,7 @@ app.use((err, req, res, next) => {
 
 
 
-app.listen(process.env.BACKEND_PORT, () =>{
+app.listen(4000, () =>{
 console.log('Server is listening on port 4000...')
 });
 
