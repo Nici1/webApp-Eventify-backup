@@ -1,5 +1,5 @@
 import express from 'express'
-import {insert_Spectator, get_Spectator, insert_Landlord, get_Landlord} from '../../model/database.js'
+import {insert_Spectator, get_Spectator, insert_Landlord, get_Landlord, get_Performer} from '../../model/database.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
@@ -72,10 +72,12 @@ router.post('/Performer', async(req, res)=>{
     }
 
     const result = await bcrypt.compare(Password, data[0].Password)
+    
     if (result){
         const token = await jwt.sign({id: data[0].ID, email: Email}, process.env.ACCESS_TOKEN_SECRET);
       
         //res.cookie('token', token, { httpOnly: true, sameSite:'none', secure: false}).json();
+        console.log('Per ', token)
         res.send({status: "success", token: token})
     }
     else{

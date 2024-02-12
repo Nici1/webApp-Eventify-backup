@@ -1,6 +1,6 @@
 import express from 'express'
 import { token_verification } from '../common_functions.js'
-import {insert_Venue, get_Venue, get_Venue_Country, get_Venue_City, get_Venue_info} from '../../model/database.js'
+import {insert_Venue, get_Venue, get_Venue_Country, get_Venue_City, get_Venue_info, get_Availability} from '../../model/database.js'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 import cors from 'cors';
@@ -76,32 +76,74 @@ router
 })
 
 
+router.route('/Date').post(async (req, res)=>{
+  console.log("Body ", req.body)
+
+  function convertToMySQLDateFormat(dateString) {
+  // Parse the input string into a Date object
+  const date = new Date(dateString);
+  
+  // Extract year, month, and day from the Date object
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed
+  const day = date.getDate().toString().padStart(2, '0');
+  
+  // Construct the MySQL date format string
+  const mysqlDateFormat = `${year}-${month}-${day}`;
+  
+  return mysqlDateFormat;
+}
+
+  // Example usage
+  const inputDateString = req.body.date
+  const mysqlDateFormat = convertToMySQLDateFormat(inputDateString);
+  console.log(req.body.id, req.body.date)
+  const r = await get_Availability(req.body.id, mysqlDateFormat)
+  res.send(r)
+  console.log("Result ", r); // Output: "2024-02-13"
+
+})
+
 router
-.route('/getImage')
-.get( async (req, res) => {
+.route('/getImages')
+.post( async (req, res) => {
+  console.log("Bsadf ", req.body.id)
   try {
-    const blobServiceClient = new BlobServiceClient(`https://lord.blob.core.windows.net/test?sp=r&st=2024-02-08T17:00:54Z&se=2024-03-13T01:00:54Z&sv=2022-11-02&sr=c&sig=I41swLoigVUKdUUMfAM%2Fml%2BFlqywDfM5%2FtNDIfE8Y0Q%3D`);
-console.log('hello')
-const containerName =  req.user.id;
-const containerClient = blobServiceClient.getContainerClient(containerName);
+    const blobServiceClient = new BlobServiceClient(`https://lord.blob.core.windows.net/test?sp=racwdli&st=2024-02-08T22:31:23Z&se=2024-03-29T06:31:23Z&sv=2022-11-02&sr=c&sig=gn8efUSCxmUVAh7pjmCDexSV0YnpfMjfCFqelkZBGo8%3D`);
+    const containerName =  req.body.id;
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    const contentType = 'image/png';  // Adjust this based on your file type
 
-// Specify the blob name you want to download
-const blobName = "img-user11707237208518.png";
-const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+  const images = []
 
-// Download the blob content
-const downloadBlobResponse = await blockBlobClient.downloadToBuffer();
+      let i = 0;
 
-// Now, downloadBlobResponse contains the content of the blob
-// You can use it as needed
-console.log(`Downloaded blob ${blobName} successfully`, downloadBlobResponse);
+      // Continue fetching images until an error occurs
+      while (true) {
+        const blobName = "img-user" + `${req.body.id}` + `-${i}` + `.png`;
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
-  }
-    
-    catch(e){
-      console.log(e)
-    }
-  res.send('okay')
+        try {
+          // Download the blob content
+          const downloadBlobResponse = await blockBlobClient.downloadToBuffer();
+          const imageData = downloadBlobResponse.toString('base64');
+          images.push(imageData);
+          i++;
+        } catch (error) {
+          // Error fetching image, exit loop
+          break;
+        }
+      }
+
+  //console.log(images)
+  res.send(images)
+
+      }
+        
+        catch(e){
+          console.log(e)
+          res.send(e)
+        }
 });
 
 

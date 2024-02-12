@@ -12,6 +12,7 @@ import { token_verification } from './common_functions.js';
 import { BlobServiceClient, StorageSharedKeyCredential } from '@azure/storage-blob';
 import multer from 'multer';
 import path from 'path'
+import { get_Performer, insert_Application } from '../model/database.js';
 
 dotenv.config()
 
@@ -81,6 +82,18 @@ app.get("/", async (req, res) => {
 })
 app.use(token_verification)
 
+app.post('/application', async (req, res) =>{
+
+  console.log("Body ", req.body)
+
+const id = await get_Performer(req.user.email)
+console.log(id[0].ID)
+await insert_Application(id[0].ID, req.body.selectedTime)
+res.send('heheh')
+  
+})
+
+
 let m = multer()
 app.post('/upload',  m.single('Image'), (req, res) =>{
 
@@ -112,31 +125,7 @@ app.post('/upload',  m.single('Image'), (req, res) =>{
 })
 
 
-app.get('/mk', async (req, res) => {
-  try {
-    const blobServiceClient = new BlobServiceClient(`https://lord.blob.core.windows.net/test?sp=r&st=2024-02-08T17:00:54Z&se=2024-03-13T01:00:54Z&sv=2022-11-02&sr=c&sig=I41swLoigVUKdUUMfAM%2Fml%2BFlqywDfM5%2FtNDIfE8Y0Q%3D`);
-console.log('hello')
-const containerName =  req.user.id;
-const containerClient = blobServiceClient.getContainerClient(containerName);
 
-// Specify the blob name you want to download
-const blobName = "img-user11707237208518.png";
-const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-// Download the blob content
-const downloadBlobResponse = await blockBlobClient.downloadToBuffer();
-
-// Now, downloadBlobResponse contains the content of the blob
-// You can use it as needed
-console.log(`Downloaded blob ${blobName} successfully`, downloadBlobResponse);
-
-  }
-    
-    catch(e){
-      console.log(e)
-    }
-  res.send('okay')
-});
 
 
 

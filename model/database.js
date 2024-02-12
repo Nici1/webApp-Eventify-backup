@@ -33,6 +33,8 @@ async function get_Landlord(Email){
     return result[0]
 }
 
+
+
 async function insert_Landlord(Name, Surname, Address, DateofBirth, Email, Password){
 
     const result = await pool.query(`INSERT INTO Landlord (Name, Surname, Address, DateofBirth, Email, Password) VALUES (?, ?, ?, ?, ?, ?)`, 
@@ -50,7 +52,7 @@ async function insert_Performer(Name, Surname, Artist, Category, Email, Password
 
 async function get_Performer(Email){
 
-    const result = await pool.query(`SELECT * FROM Spectator WHERE Email=?`, [Email]);
+    const result = await pool.query(`SELECT * FROM Performer WHERE Email=?`, [Email]);
     return result[0]
 }
 
@@ -68,26 +70,24 @@ async function get_Venue(pageNumber, pageSize, City) {
   const offset = (pageNumber - 1) * pageSize;
 
     if (City==='All'){
-    const result = await pool.query(`SELECT ID, Name, Capacity, Address, LandlordID FROM Venue ORDER BY ID LIMIT ? OFFSET ?`,
+    const result = await pool.query(`SELECT ID, Name, Capacity, Address, LandlordID, City, Description FROM Venue ORDER BY ID LIMIT ? OFFSET ?`,
     [pageSize, offset]);
   return result[0];
     }
     else{
     const result = await pool.query(
-    `SELECT ID, Name, Capacity, Address, LandlordID FROM Venue WHERE City=? ORDER BY ID LIMIT ? OFFSET ?`,
+    `SELECT ID, Name, Capacity, Address, LandlordID, City, Description FROM Venue WHERE City=? ORDER BY ID LIMIT ? OFFSET ?`,
     [City, pageSize, offset]);
   return result[0];
     }
     
-  
-
   
 }
 
 
 async function get_Venue_info(Name) {
   
-  const result = await pool.query(`SELECT Name, Capacity, Address FROM Venue WHERE Name = ?`,[Name]);
+  const result = await pool.query(`SELECT Name, Capacity, Address, Description, City, LandlordID FROM Venue WHERE Name = ?`,[Name]);
 
   return result[0];
 }
@@ -115,4 +115,24 @@ async function get_CategoryID(Category){
 }
 
 
-export {insert_Spectator, get_Spectator, insert_Landlord, get_Landlord, insert_Venue, get_Performer, insert_Performer, get_Venue, get_Venue_City, get_Venue_Country, get_Venue_info};
+async function get_Availability(venueID, date){
+
+  console.log(venueID, ' ', date)
+ const intervals = await pool.query(
+        `SELECT ID, StartTime, EndTime 
+         FROM Venueavailability 
+         WHERE VenueID = ? AND Date = ?`, 
+        [venueID, date]
+    );    
+    return intervals[0];
+
+}
+
+async function insert_Application(performerid, availabilityid){
+
+    const result = await pool.query(`INSERT INTO Application (PerformerID, AvailabilityID) VALUES (?, ?)`, 
+    [performerid, availabilityid]);
+    return result
+}
+
+export {insert_Spectator, get_Spectator, insert_Landlord, get_Landlord, insert_Venue, get_Performer, insert_Performer, get_Venue, get_Venue_City, get_Venue_Country, get_Venue_info, get_Availability,  insert_Application};
