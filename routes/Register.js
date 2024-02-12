@@ -1,5 +1,5 @@
 import express from 'express'
-import {insert_Spectator, get_Spectator, insert_Landlord, get_Landlord, insert_Performer, get_Performer} from '../../model/database.js'
+import {insert_Spectator, get_Spectator, insert_Landlord, get_Landlord, insert_Performer, get_Performer} from '../model/database.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 const router = express.Router()

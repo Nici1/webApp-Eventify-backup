@@ -1,6 +1,6 @@
 import express from 'express'
 import { token_verification } from '../common_functions.js'
-import {insert_Venue, get_Venue, get_Venue_Country, get_Venue_City, get_Venue_info, get_Availability} from '../../model/database.js'
+import {insert_Venue, get_Venue, get_Venue_Country, get_Venue_City, get_Venue_info, get_Availability} from '../model/database.js'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 import cors from 'cors';

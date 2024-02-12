@@ -12,7 +12,7 @@ import { token_verification } from './common_functions.js';
 import { BlobServiceClient, StorageSharedKeyCredential } from '@azure/storage-blob';
 import multer from 'multer';
 import path from 'path'
-import { get_Applications, get_Performer, insert_Application } from '../model/database.js';
+import { get_Applications, get_Performer, insert_Application } from './model/database.js';
 
 dotenv.config()
 
