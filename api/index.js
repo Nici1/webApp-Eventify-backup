@@ -12,7 +12,7 @@ import { token_verification } from './common_functions.js';
 import { BlobServiceClient, StorageSharedKeyCredential } from '@azure/storage-blob';
 import multer from 'multer';
 import path from 'path'
-import { get_Performer, insert_Application } from '../model/database.js';
+import { get_Applications, get_Performer, insert_Application } from '../model/database.js';
 
 dotenv.config()
 
@@ -82,7 +82,7 @@ app.get("/", async (req, res) => {
 })
 app.use(token_verification)
 
-app.post('/application', async (req, res) =>{
+app.post('/apply', async (req, res) =>{
 
   console.log("Body ", req.body)
 
@@ -90,6 +90,27 @@ const id = await get_Performer(req.user.email)
 console.log(id[0].ID)
 await insert_Application(id[0].ID, req.body.selectedTime)
 res.send('heheh')
+  
+})
+
+app.post('/application', async (req, res) =>{
+
+try {
+    const { pageNumber, pageSize} = req.body; // Assuming pageNumber is passed as a query parameter
+    
+    if (isNaN(pageNumber)) {
+      res.status(400).json({ error: 'Invalid pageNumber parameter' });
+      return;
+    }
+    // Assuming get_Venue supports pagination and returns data based on pageNumber
+    const result = await get_Applications(pageNumber, pageSize);
+    console.log("Resss ", result)
+    res.send(result[0])
+    
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
   
 })
 

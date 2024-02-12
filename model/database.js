@@ -135,4 +135,17 @@ async function insert_Application(performerid, availabilityid){
     return result
 }
 
-export {insert_Spectator, get_Spectator, insert_Landlord, get_Landlord, insert_Venue, get_Performer, insert_Performer, get_Venue, get_Venue_City, get_Venue_Country, get_Venue_info, get_Availability,  insert_Application};
+async function get_Applications(pageNumber, pageSize) {
+  console.log(pageNumber)
+  const offset = (pageNumber - 1) * pageSize;
+
+    const result = await pool.query(
+    `SELECT PerformerID, AvailabilityID FROM Application ORDER BY ID LIMIT ? OFFSET ?`,
+    [pageSize, offset]);
+  return result[0];
+    
+    
+  
+}
+
+export {insert_Spectator, get_Spectator, insert_Landlord, get_Landlord, insert_Venue, get_Performer, insert_Performer, get_Venue, get_Venue_City, get_Venue_Country, get_Venue_info, get_Availability,  insert_Application, get_Applications};
