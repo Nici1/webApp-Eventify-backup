@@ -115,7 +115,7 @@ async function get_CategoryID(Category){
 }
 
 
-async function get_Availability(venueID, date){
+async function get_time_Availability(venueID, date){
 
   console.log(venueID, ' ', date)
  const intervals = await pool.query(
@@ -125,6 +125,19 @@ async function get_Availability(venueID, date){
         [venueID, date]
     );    
     return intervals[0];
+
+}
+
+async function get_date_Availability(venueID, month){
+console.log(venueID, month)
+ const dates = await pool.query(
+        `SELECT ID, Date 
+         FROM Venueavailability 
+         WHERE VenueID = ? AND MONTH(Date) = ? AND Status='available'`, 
+        [venueID, month]
+    );  
+    console.log("Dates ", dates[0])  
+    return dates[0];
 
 }
 
@@ -148,4 +161,5 @@ async function get_Applications(pageNumber, pageSize) {
   
 }
 
-export {insert_Spectator, get_Spectator, insert_Landlord, get_Landlord, insert_Venue, get_Performer, insert_Performer, get_Venue, get_Venue_City, get_Venue_Country, get_Venue_info, get_Availability,  insert_Application, get_Applications};
+export {insert_Spectator, get_Spectator, insert_Landlord, get_Landlord, insert_Venue, get_Performer, insert_Performer, get_Venue, 
+  get_Venue_City, get_Venue_Country, get_Venue_info, get_time_Availability,  insert_Application, get_Applications, get_date_Availability};

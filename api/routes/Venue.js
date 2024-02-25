@@ -1,6 +1,6 @@
 import express from 'express'
-import { token_verification } from '../common_functions.js'
-import {insert_Venue, get_Venue, get_Venue_Country, get_Venue_City, get_Venue_info, get_Availability} from '../model/database.js'
+import { token_verification, convertToMySQLDateFormat } from '../common_functions.js'
+import {insert_Venue, get_Venue, get_Venue_Country, get_Venue_City, get_Venue_info, get_time_Availability, get_date_Availability} from '../model/database.js'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 import cors from 'cors';
@@ -79,30 +79,34 @@ router
 router.route('/Date').post(async (req, res)=>{
   console.log("Body ", req.body)
 
-  function convertToMySQLDateFormat(dateString) {
-  // Parse the input string into a Date object
-  const date = new Date(dateString);
   
-  // Extract year, month, and day from the Date object
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed
-  const day = date.getDate().toString().padStart(2, '0');
-  
-  // Construct the MySQL date format string
-  const mysqlDateFormat = `${year}-${month}-${day}`;
-  
-  return mysqlDateFormat;
-}
 
   // Example usage
   const inputDateString = req.body.date
   const mysqlDateFormat = convertToMySQLDateFormat(inputDateString);
   console.log(req.body.id, req.body.date)
-  const r = await get_Availability(req.body.id, mysqlDateFormat)
+  const r = await get_time_Availability(req.body.id, mysqlDateFormat)
   res.send(r)
   console.log("Result ", r); // Output: "2024-02-13"
 
 })
+
+
+
+router.route('/availability').post(async (req, res)=>{
+  console.log("blabla ", req.body)
+  const inputDateString = req.body.date
+  const mysqlDateFormat = convertToMySQLDateFormat(inputDateString);
+  const date = new Date(mysqlDateFormat);
+  const r = await get_date_Availability(req.body.id, date.getMonth()+1)
+
+
+
+    res.send(r)
+  
+
+})
+
 
 router
 .route('/getImages')

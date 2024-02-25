@@ -1,0 +1,75 @@
+.calendar-container{
+    
+    width: 50%
+    
+    
+}
+
+.custom-calendar .react-calendar {
+  width: 40%;
+  padding-bottom: 5%;
+
+}
+
+.custom-calendar .react-calendar__tile {
+  border-radius: 1em;
+  width: 40%;
+  font-size: 1.5em;
+  
+ 
+}
+
+.react-calendar__month-view__weekdays {
+  margin-bottom: 1%; 
+  
+}
+
+.custom-calendar .react-calendar__month-view {
+  width: 80%;
+  margin-bottom: 1%;
+  padding-bottom: 1%;
+  
+}
+
+.custom-calendar .react-calendar__navigation .react-calendar__navigation__label{
+  width: 40%;
+    border-radius: 1em;
+    margin-bottom: 2.5%;
+    font-size: 1.5em;
+    margin-left: 10%;
+    margin-right: 10%;
+    
+   
+
+}
+
+.custom-calendar .react-calendar__navigation button {
+ width: 10%;
+border-radius: 1em;
+font-size: 1.5em;
+
+
+ 
+
+
+}
+
+.custom-calendar .react-calendar__navigation button:disabled {
+  width: 10%;
+  padding-bottom: 5%;
+  
+}
+
+.colored-tile {
+  background-color: green; /* Set the background color as desired */
+  color: white; /* Set the text color */
+}
+
+.react-calendar__navigation__arrow.react-calendar__navigation__next2-button,
+.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button {
+  display: none; /* Hide both buttons for incrementing and decrementing the year */
+}
+
+.info{
+    width: 50%;
+}

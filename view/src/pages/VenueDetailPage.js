@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Calendar from 'react-calendar'; // Import the Calendar component
+import '.././calendar.css';
 
 function VenueDetailPage() {
   const [venueInfo, setVenueInfo] = useState({
@@ -18,6 +19,8 @@ function VenueDetailPage() {
   const [availableTime, setAvailableTime] = useState(); // State for selected time
   const [images, setImages] = useState([]); // State for images
   const [warning, setWarning] = useState();
+  const [highlightedDates, setHighlightedDates] = useState([]);
+
 
   const handleDateChange = async (date) => {
     setSelectedDate(date);
@@ -54,9 +57,11 @@ function VenueDetailPage() {
       }
     }
     getVenueInfo();
+    
+
+
   }, [bookName]);
 
-  // Handler for selecting time
   const handleTimeChange = (e) => {
     setSelectedTime(e.target.value);
   };
@@ -98,6 +103,35 @@ function VenueDetailPage() {
   }
   };
 
+  // Function to handle the month change in the calendar
+  const handleActiveStartDateChange = async ({ activeStartDate }) => {
+    console.log('New active start date:', activeStartDate);
+    // Make Axios GET request to the /venue/availability endpoint
+    try {
+      const response = await axios.post('/venue/availability', {date: activeStartDate, id: bookName.split('-')[1]}, {
+        headers: { 'token': localStorage.getItem('Spectator-Token') }
+      });
+      console.log('Response from /venue/availability:', response.data);
+      
+      const datesWithIds = response.data.map(entry => ({
+      date: new Date(entry.Date),
+      id: entry.ID
+    }));
+    setHighlightedDates(datesWithIds);
+    } catch (error) {
+      console.error('Error fetching availability:', error);
+    }
+  };
+
+
+    useEffect(() => {
+    // Get the current date
+    const currentDate = new Date();
+    console.log('current date ', currentDate)
+    // Call the handleActiveStartDateChange function with the current date
+    handleActiveStartDateChange({ activeStartDate: currentDate });
+  }, []); // Empty dependency array ensures this effect runs only once after the initial render
+
   return (
     <div className='VenuePage'>
       {venueInfo ? (
@@ -105,50 +139,58 @@ function VenueDetailPage() {
           <h1>{venueInfo.Name}</h1>
           <h3>{venueInfo.City}</h3>
           <div className="image-container">
-
             {images.length > 0 ? (
-    images.map((image, index) => {
-      // Calculate aspect ratio of the image
-      const aspectRatio = images[index].width / images[index].height;
-      // Set the width and height of the image preview container based on the aspect ratio
-      const width = aspectRatio > 1 ? '500px' : 'auto';
-      const height = aspectRatio > 1 ? 'auto' : '500px';
-
-      return (
-        <div className="image-preview" key={index} style={{ width: width, height: height }}>
-          <img className="preview-image" src={`data:image/png;base64,${image}`} alt={`Preview ${index + 1}`} />
-        </div>
-      );
-    })
-  ) : (
-    <p>No images uploaded</p>
-  )}
+              images.map((image, index) => (
+                <div className="image-preview" key={index}>
+                  <img className="preview-image" src={`data:image/png;base64,${image}`} alt={`Preview ${index + 1}`}  width="100%" height="100%"/>
+                </div>
+              ))
+            ) : (
+              <p>No images uploaded</p>
+            )}
           </div>
           <p>{venueInfo.Description}</p>
-          <Calendar onChange={handleDateChange} value={selectedDate} />
-          
-          {/* Select element for choosing time */}
+          <div className='calendar-info'>
+            <div className='calendar-container'>
+              <Calendar
+                onChange={handleDateChange}
+                value={selectedDate}
+                onActiveStartDateChange={handleActiveStartDateChange}
+                className='custom-calendar' 
+                tileClassName={({ date }) => {
+                if (highlightedDates.some(entry => new Date(entry.date).getDate() === date.getDate())) {
+                  return 'colored-tile';
+                }
+                return '';
+              }}
+              />
+            </div>
+          <div className='info'>
+            <ul>
+              <li>Capacity: {venueInfo.Capacity}</li>
+              <li>Item 2</li>
+              <li>Item 3</li>
+            </ul>
+          </div>
+          </div>
           <select value={selectedTime} onChange={handleTimeChange}>
             <option value="">Select Time</option>
             {availableTime?.map((c, index) => (<option key={index} value={c.ID}>{c.StartTime + '-' + c.EndTime}</option>))}
           </select>
           {warning !== 'Okay' && !selectedTime && <p style={{ color: 'red' }}>No time interval was selected</p>}
-
-        <div>
-          <button className='venue-element' style={{ backgroundColor: 'gray' }} onClick={handleSubmit}>Submit</button>
-
+          <div>
+            <button className='venue-element' style={{ backgroundColor: 'gray' }} onClick={handleSubmit}>Submit</button>
           </div>  
-          
         </div>
       ) : (
         <p>Loading...</p>
       )}
-      
     </div>
   );
 }
 
 export default VenueDetailPage;
+
 
 
 

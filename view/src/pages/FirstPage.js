@@ -20,7 +20,7 @@ function FirstPage() {
   }, []); // Empty dependency array ensures the effect runs only once when the component mounts
 
   return (
-<div style={{ backgroundColor: 'coral', margin: 0, padding: 0, boxSizing: 'border-box', overflown: 'visible'}}>
+<div style={{ backgroundColor: 'green', margin: 0, padding: 0, boxSizing: 'border-box', overflown: 'visible'}}>
    
 
       {/* Render sections with background images */}
@@ -28,7 +28,7 @@ function FirstPage() {
         <div
           key={index}
           className="image-section"
-          style={{ backgroundImage: `url(data:image/jpeg;base64,${base64String})` }}>
+          style={{ backgroundImage: `url(data:image/jpeg;base64,${base64String})`}}>
         </div>
       ))}
     </div>

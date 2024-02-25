@@ -116,11 +116,13 @@ function VenueListPage() {
 
   return (
     <div className='venue-container'>
-      <div className='Filter'>
+      <div className='Filter-wrapper'>
+        <div className='Filter'>
         <div>Filter by city:</div>
         <select className='venue-element' value={selectedCity} onChange={(e) => handleCityChange(e.target.value)}>
           {cities.map((c, index) => (<option key={index} value={c.City}>{c.City}</option>))}
         </select>
+        </div>
       </div>
 
       <div className='content-section'>
@@ -133,21 +135,28 @@ function VenueListPage() {
           if (books.length === index + 1) {
             return <Link  to={`/venue/${book.Name}`+ `-${book.ID}`} key ={key} className="custom-link">
               <div className='venue-list' ref={lastBookElementRef} key={key}>
-                <div>
+                 <div className='list-image'>
+              {<img src={`data:image/png;base64,${image}`} alt={`Image ${book.ID}`} width="90%" height="100%" />}
+              </div>
+                <div className='desc'>
                 <h1>{book.Name}</h1>
                 <p>{book.Description}</p>
-              {<img src={`data:image/png;base64,${image}`} alt={`Image ${book.ID}`} width="200" height="100" />}
-              </div>
+                </div>
+               
 
               </div>
               </Link>;
           } else {
             return <Link  to={`/venue/${book.Name}` + `-${book.ID}`} key ={key} className="custom-link">
               <div className='venue-list' key={key}>
-               <div> 
+              <div className='list-image'>
+                {<img src={`data:image/png;base64,${image}`} alt={`Image ${book.ID}`} width="90%" height="100%" />}</div>
+              
+               <div className='desc'> 
                 <h1>{book.Name}</h1>
                 <p>{book.Description}</p>
-            {<img src={`data:image/png;base64,${image}`} alt={`Image ${book.ID}`} width="200" height="100" />}</div>
+              </div>
+             
             </div>
               </Link>;
           }

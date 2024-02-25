@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken'
 
 async function token_verification(req, res, next){
     
-  
 
     try {
         // Verify the token asynchronously
@@ -34,6 +33,9 @@ async function token_verification(req, res, next){
         
         
     }
+
+
+
 
 
     /*
@@ -67,4 +69,19 @@ async function token_verification(req, res, next){
 
 }
 
-export {token_verification};
+function convertToMySQLDateFormat(dateString) {
+  // Parse the input string into a Date object
+  const date = new Date(dateString);
+  
+  // Extract year, month, and day from the Date object
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-indexed
+  const day = date.getDate().toString().padStart(2, '0');
+  
+  // Construct the MySQL date format string
+  const mysqlDateFormat = `${year}-${month}-${day}`;
+  
+  return mysqlDateFormat;
+}
+
+export {token_verification, convertToMySQLDateFormat};
