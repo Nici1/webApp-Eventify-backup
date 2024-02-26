@@ -8,7 +8,10 @@ import axios from 'axios';
 
 function LoginPage() {
 
-  const [redirect, setRedirect] = useState(false);
+  const [redirect_landlord, setRedirect_landlord] = useState(false);
+  const [redirect_spectator, setRedirect_spectator] = useState(false);
+  const [redirect_performer, setRedirect_performer] = useState(false);
+
 
 
   const [login_info, setlogin_info] = useState({  
@@ -25,8 +28,8 @@ function LoginPage() {
     event.preventDefault();
     const result = await login();
     console.log(result)
-    alert('Login successful');
-    setRedirect(true);
+  
+    
   }
 
   async function login() {
@@ -43,12 +46,14 @@ function LoginPage() {
 
       console.log(response_per.data.token)
       localStorage.setItem("Performer-Token", response_per.data.token)
+      setRedirect_performer(true);
       return response_per;
     }
   }
   else{
 
     localStorage.setItem("Spectator-Token", response_spec.data.token)
+    setRedirect_spectator(true)
     return response_spec;
 
   }
@@ -56,6 +61,7 @@ function LoginPage() {
     else{
       console.log("Response: ", response_landlord)
       localStorage.setItem("Landlord-Token", response_landlord.data.token)
+      setRedirect_landlord(true);
       return response_landlord;
     }
   } catch (error) {
@@ -64,8 +70,16 @@ function LoginPage() {
   }
 }
 
-  if (redirect){
+  if (redirect_landlord){
     return <Navigate to ={'/venue'}/>
+  }
+  if (redirect_performer){
+    return <Navigate to ={'/venue/list'}/>
+
+  }
+  if (redirect_spectator){
+    return <Navigate to ={'/events'}/>
+
   }
 
   return (

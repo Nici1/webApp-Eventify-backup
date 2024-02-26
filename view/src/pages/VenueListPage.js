@@ -23,7 +23,7 @@ function useBookSearch(pageNumber, selectedCity) {
             pageNumber: pageNumber,
             pageSize: 2,
             City: selectedCity,
-            token: localStorage.getItem('Spectator-Token'),
+            token: localStorage.getItem('Performer-Token'),
           },
           { withCredentials: true }
         );
@@ -63,7 +63,7 @@ function VenueListPage() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const citiesData = await axios.post('/venue/list/city', { token: localStorage.getItem("Spectator-Token")}, { withCredentials: true });
+        const citiesData = await axios.post('/venue/list/city', { token: localStorage.getItem("Performer-Token")}, { withCredentials: true });
         setCities(citiesData.data);
       } catch (error) {
         console.log(error);

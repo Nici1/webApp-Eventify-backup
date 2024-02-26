@@ -30,6 +30,11 @@ li {
   font-size: 1.6rem; /* 16px */
 }
 
+div {
+    font-size: 1.6rem; /* 16px */
+
+}
+
 .login-element, .register-element, .venue-element {
     border-radius:2em;
     margin: 0.5em;

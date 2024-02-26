@@ -18,7 +18,7 @@ function useBookSearch(pageNumber) {
           '/application',
           {
             pageNumber: pageNumber,
-            pageSize: 2,
+            pageSize: 3,
             token: localStorage.getItem('Landlord-Token'),
           },
           { withCredentials: true }

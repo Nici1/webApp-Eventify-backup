@@ -7,9 +7,11 @@ import VenuePage from "./pages/VenuePage";
 import VenueListPage from "./pages/VenueListPage";
 import VenueDetailPage from './pages/VenueDetailPage';  
 import Header from "./Header";
+import Selector from "./Selector";
 import Layout from "./Layout";
 import baseUrl from "./backend";
 import FirstPage from "./pages/FirstPage";
+import EventsPage from "./pages/EventsPage";
 import ApplicationsPage from "./pages/ApplicationsPage";
 
 
@@ -26,14 +28,17 @@ function App() {
         <Route path="/" element={<FirstPage />} />
 
         <Route path="/login" element={<LoginPage />} />
-        <Route path="register" element={<RegisterPage />} />
-        <Route path="venue" element={<VenuePage />} />
-        <Route path="venue/list" element={<VenueListPage />} />
-        <Route path="venue/:bookName" element={<VenueDetailPage />} />
-        <Route path="/applications" element={<ApplicationsPage />} />
-
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/venue/list" element={<VenueListPage />} />
+        <Route path="/venue/:bookName" element={<VenueDetailPage />} />
+        <Route path="/events" element={<EventsPage />} />
         
-
+    
+    
+      
+     
+        <Route path="/applications" element={<Selector><ApplicationsPage /></Selector>} />
+        <Route path="/venue" element={<Selector><VenuePage /></Selector>} />
       </Routes>
     </Router>
   );
