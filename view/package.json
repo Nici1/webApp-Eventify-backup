@@ -10,6 +10,7 @@
     "axios": "^1.6.7",
     "dotenv": "^16.4.2",
     "framer-motion": "^11.0.6",
+    "jsonwebtoken": "^9.0.2",
     "react": "^18.2.0",
     "react-calendar": "^4.8.0",
     "react-dom": "^18.2.0",

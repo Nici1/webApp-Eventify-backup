@@ -22,18 +22,12 @@ h3 {
   font-size: 1.8rem; /* 18px */
 }
 
-p {
+p, li, div, a {
   font-size: 1.6rem; /* 16px */
 }
 
-li {
-  font-size: 1.6rem; /* 16px */
-}
 
-div {
-    font-size: 1.6rem; /* 16px */
 
-}
 
 .login-element, .register-element, .venue-element {
     border-radius:2em;
@@ -133,6 +127,9 @@ div {
   color: black; /* Set your desired text color */
   text-decoration: none; /* Remove the default underline */
   cursor: pointer; /* Show a pointer cursor on hover */
+  display: inline-block;
+  width: 100%;
+  text-align: center
 }
 
 .image-uploader {
@@ -170,7 +167,7 @@ div {
 
 
 
-/* Add more styles as needed */
+
 
 
 

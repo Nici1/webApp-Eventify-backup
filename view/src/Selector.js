@@ -8,10 +8,17 @@ export default function Selector() {
 
   return (
     <div className='selector-container'>
-        <div className='selector '>
-        <div className='options-size'>Add venues</div>
-        <div className='my-venues options-size'>My venues</div>
-        <div className='options-size'>Applications</div>
+        <div className='selector'>
+        <Link className='custom-link' to={'/venue'}>
+            <div >Add venues</div>
+        </Link>
+        <Link className='custom-link' to={'/myvenues'}>
+            <div className='my-venues'>My venues</div>
+        </Link>
+        <Link className='custom-link' to={'/applications'}>
+            <div>Applications</div>
+        </Link>
+        
         </div>
     </div>
   );

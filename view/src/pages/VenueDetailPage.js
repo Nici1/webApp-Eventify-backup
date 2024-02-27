@@ -69,7 +69,7 @@ function VenueDetailPage() {
   const fetchImages = async (landlordID) => {
     try {
       console.log("as ", landlordID)
-      const response = await axios.post('/venue/getImages', { id: landlordID }, {
+      const response = await axios.post('/venue/getImages', { id: landlordID, venue_id: bookName.split('-')[1] }, {
         headers: {
           'token': localStorage.getItem('Performer-Token'),
         }

@@ -24,7 +24,8 @@ function useBookSearch(pageNumber) {
           { withCredentials: true }
         );
         console.log("Response ", response.data)
-        setBooks(prevBooks => [...new Set([prevBooks, response.data])]);
+        setBooks(prevBooks => [...new Set([...prevBooks, ...response.data])]);
+        console.log("Books ", books)
         setHasMore(response.data.length > 0);
       } catch (e) {
         setError(true);
@@ -75,19 +76,23 @@ function ApplicationsPage() {
     [loading, hasMore, setPageNumber]
   );
 
+
+
   return (
    
     
-    <div className='VenuePage'>
+    <div className='content-section'>
+      <div className='content-section'>
       {books.map((book, index) => {
         if (books.length === index+1) {
-          return <div className = 'venue-list' ref={lastBookElementRef} key={book}>{book.PerformerID}</div>;
+          return <div  className='venue-list' ref={lastBookElementRef} key={book}>{book.PerformerID}</div>;
         } else {
-          return <div className = 'venue-list' key={book}>{book.PerformerID}</div>;
+          return <div className='venue-list' key={book}>{book.PerformerID}</div>;
         }
       })}
       <div>{loading && 'Loading...'}</div>
       <div>{error && 'Error'}</div>
+      </div>
     </div>
     
   );
