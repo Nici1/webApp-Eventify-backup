@@ -1,6 +1,6 @@
 import express from 'express'
 import { token_verification, convertToMySQLDateFormat } from '../common_functions.js'
-import {insert_Venue, get_Venue, get_Venue_Country, get_Venue_City, get_Venue_info, get_time_Availability, get_date_Availability} from '../model/database.js'
+import {insert_Venue, get_Venue, get_Venue_Country, get_Venue_City, get_Venue_info, get_time_Availability, get_date_Availability, get_MyVenues} from '../model/database.js'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
 import cors from 'cors';
@@ -30,6 +30,9 @@ router
     
   try{
 
+    const result = await insert_Venue(Name, Capacity, Address, Category, req.user.id)
+
+
     const blobServiceClient = new BlobServiceClient(`https://lord.blob.core.windows.net/test?sp=racwdli&st=2024-02-08T22:31:23Z&se=2024-03-29T06:31:23Z&sv=2022-11-02&sr=c&sig=gn8efUSCxmUVAh7pjmCDexSV0YnpfMjfCFqelkZBGo8%3D`);
   
     const containerName =  req.user.id;
@@ -43,7 +46,7 @@ router
   for (let i=0; i < req.files.length; i++){
 
     const content = req.files[i].buffer;
-    const blobName = "img-user" + `${req.user.id}` + `-${i}` + `.png`;
+    const blobName = "img-user" + `-${req.user.id}` + `-${result}`+`-${i}` + `.png`;
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
     
     
@@ -58,8 +61,6 @@ router
 
   
 
-  //console.log(`Upload block blob ${blobName} successfully`, uploadBlobResponse.requestId);
-  const result = await insert_Venue(Name, Capacity, Address, Category, req.user.id)
   res.send({ status: "success"})
   }
     catch(e){
@@ -124,7 +125,7 @@ router
 
       // Continue fetching images until an error occurs
       while (true) {
-        const blobName = "img-user" + `${req.body.id}` + `-${i}` + `.png`;
+        const blobName = "img-user" + `-${req.body.id}` + `-${req.body.venue_id}`+`-${i}` + `.png`;
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
         try {
@@ -170,7 +171,8 @@ router.route('/list').post(async (req, res) => {
       const containerClient = blobServiceClient.getContainerClient(containerName);
 
       // Specify the blob name you want to download
-      const blobName = "img-user" + `${containerName}` + `-0` + `.png`;
+      const blobName = "img-user" + `-${containerName}` + `-${result[i].ID}`+`-0` + `.png`;
+      console.log("Blob name ", blobName)
       const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
       // Download the blob content
@@ -227,6 +229,55 @@ router.route('/:bookName').get(async (req, res)=>{
       res.send({venueData: venueData});
   }
   catch(error){
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+})
+
+
+router.route('/mine').post(async (req, res)=>{
+  const { pageNumber, pageSize} = req.body; // Assuming pageNumber is passed as a query parameter
+  const ID = req.user.id;
+  
+
+
+  try {
+    
+    if (isNaN(pageNumber)) {
+      res.status(400).json({ error: 'Invalid pageNumber parameter' });
+      return;
+    }
+
+    const venueData = await get_MyVenues(pageNumber, pageSize, ID)
+
+    const blobServiceClient = new BlobServiceClient(`https://lord.blob.core.windows.net/test?sp=racwdli&st=2024-02-08T22:31:23Z&se=2024-03-29T06:31:23Z&sv=2022-11-02&sr=c&sig=gn8efUSCxmUVAh7pjmCDexSV0YnpfMjfCFqelkZBGo8%3D`);
+    const images = [];
+    for (let i=1; i < pageSize+1; i++){
+       try {
+        const containerName = ID;
+        const containerClient = blobServiceClient.getContainerClient(containerName);
+        const blobName = `img-user-${containerName}-${i}-0.png`;
+        console.log("blob name ", blobName)
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+        const downloadBlobResponse = await blockBlobClient.downloadToBuffer();
+        images.push(downloadBlobResponse.toString('base64'));
+      } catch (error) {
+        console.error(`Error downloading blob ${i}:`, error);
+        images.push(null); // Push null to images array to indicate error
+      }
+    }
+
+    console.log(images)
+    
+    const responseObject = {
+      result: venueData,
+      images: images
+    };
+
+    // Send the response object
+    res.send(responseObject);
+  } catch (error) {
+    console.error('Error fetching data:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 

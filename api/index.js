@@ -103,9 +103,9 @@ try {
       return;
     }
     // Assuming get_Venue supports pagination and returns data based on pageNumber
-    const result = await get_Applications(pageNumber, pageSize);
-    console.log("Resss ", result)
-    res.send(result[0])
+    const result = await get_Applications(pageNumber, pageSize, req.user.id);
+    console.log("sto sum dobil ", result)
+    res.send(result)
     
   } catch (error) {
     console.error('Error fetching data:', error);
