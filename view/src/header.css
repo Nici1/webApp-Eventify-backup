@@ -1,0 +1,36 @@
+.header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center; /* Align items vertically */
+  padding: 20px;
+  
+  position: relative;
+}
+
+.oval-container {
+  border-radius: 2em;
+  border: 2px solid #000; /* Set border color and thickness */
+  padding: 10px; /* Add padding to contain the SVGs */
+}
+
+.svg {
+  width: 24px;
+  height: 24px;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 100%; /* Position the dropdown below the .oval-container */
+  right: 0; /* Align the dropdown to the right side */
+  background-color: white; /* Add background color to the dropdown */
+  border: 1px solid #ccc; /* Add border to the dropdown */
+  border-radius: 4px; /* Add border radius to the dropdown */
+  padding: 8px; /* Add padding to the dropdown */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow to the dropdown */
+  display: none; /* Hide the dropdown by default */
+}
+
+.dropdown-content.show {
+  display: block; /* Show the dropdown when .show class is applied */
+}
+
